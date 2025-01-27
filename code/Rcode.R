@@ -36,7 +36,7 @@ library("ecmwfr")
 # 2. Get your API keys: https://cds.climate.copernicus.eu/how-to-api
 
 # 3. Set a key to the keychain
-wf_set_key(key = "97b8d178-a8e9-4fa1-ac36-3fae90a074e1") # Insert your key within the quotes
+wf_set_key(key = "") # Insert your key within the quotes
 
 # you can retrieve the key using
 wf_get_key()
