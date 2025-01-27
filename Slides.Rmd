@@ -1,0 +1,188 @@
+---
+title: "Weather and Climate Projections Data for Economics"
+subtitle: "PhD Topics"
+author: "Loïc Henry"
+institute: "Université Paris-Dauphine -- PSL"
+date: "27/01/2025 (updated: `r Sys.Date()`)"
+output:
+  xaringan::moon_reader:
+    # chakra: libs/remark-latest.min.js # To make work slides offline
+    css: 
+      - xaringan-themer.css
+      - css/mytheme.css
+      - css/mytheme-fonts.css
+    lib_dir: libs
+    self_contained: false
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "16:9"
+      slideNumberFormat: |
+        <div class="progress-bar-container">
+          <div class="progress-bar" style="width: calc(%current% / %total% * 100%);">
+          </div>
+        </div>
+---
+```{r meta, echo=FALSE, warning=FALSE}
+library(metathis)
+meta() %>%
+  meta_general(
+    description = "Weather and Climate Projections Data for Economics: An Introduction",
+    generator = "xaringan and remark.js"
+  ) %>% 
+  meta_name("github-repo" = "loichy/WeatherData_Economics") %>% 
+  meta_social(
+    title = "Weather and Climate Projections Data for Economics &#8212; An Introduction",
+    url = "https://loichy.github.io/phdtopic-slides/PresentationSlides.html#1",
+    image_alt = "Title slide for the PhD Topic on Weather and Climate Projections Data for Economics ",
+    og_type = "website",
+    og_author = "Loic Henry"
+  )
+```
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+# Install packages from Github (if needed)
+# remotes::install_github("rstudio/fontawesome")
+# remotes::install_github("mitchelloharawild/icons")
+
+# Load packages
+library(knitr)
+library(tidyverse)
+library(fontawesome)
+library(xaringanExtra)
+library(icons)
+
+```
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+style_mono_accent(
+  base_color = "#2f4486", 
+  colors = c(
+    DarkBlue = "#003087",
+    Blue = "#2f4486",
+    BrightBlue = "#4d6fdb",
+  
+    Black = "#231F20",
+    DarkGrey = "#425563",
+    MidGrey = "#768692",
+    PaleGrey = "#E8EDEE",
+    White = "#FFFFFF",
+    
+    DarkGreen = "#006747",
+    Green = "#009639",
+    AquaGreen = "#00A499",
+    
+    Purple = "#330072",
+    DarkPink = "#7C2855",
+    Pink = "#AE2573",
+    DarkRed = "#8A1538",
+    Red = "#DA291C",
+    
+    MyBlue = "#122140",
+    MyYellow = "#e5bf00",
+    Gold = "#86712f",
+    
+    MyPurple = "#822f86",
+    MyRed = "#862f44",
+    MyPink = "#c09090",
+    MyGreen = "#44862f"
+    )
+  )
+  # header_font_google = google_font("Josefin Sans"),
+  # text_font_google   = google_font("Montserrat", "300", "300i"),
+  # code_font_google   = google_font("Fira Mono")
+
+
+```
+
+```{r xaringan-Extra, include=FALSE, warning=FALSE}
+# remotes::install_github("gadenbuie/xaringanExtra")
+library(xaringanExtra)
+xaringanExtra::use_tile_view()
+# xaringanExtra::use_share_again()
+# xaringanExtra::style_share_again(share_buttons = c("twitter", "linkedin", "pocket"))
+
+```
+
+```{r load_refs, include=FALSE, cache=FALSE}
+library(RefManageR)
+RefManageR::BibOptions(check.entries = FALSE,
+           bib.style = "authoryear",
+           # cite.style = "alphabetic",
+           style = "markdown",
+           hyperlink = TRUE,
+           dashed = TRUE)
+bib <- RefManageR::ReadBib("./myBib.bib", check = FALSE)
+
+
+```
+
+class: left
+name: intro
+
+## Objectives
+
+Reviewing the literature in economics using **weather and climate projections** data. Underlying in particular:
+
+.pull-left-narrow[.right[
+`r fontawesome::fa("chart-line")`
+]]
+.pull-right-wide[
+.White.bg-Gold[Methods for quantifying economic impacts of climate change]
+]
+
+.pull-left-narrow[.right[
+`r fontawesome::fa("cloud-sun-rain")`
+]]
+.pull-right-wide[
+.White.bg-Gold[Some existing assessments]
+]
+
+--
+
+Decreasing the **fixed costs** in manipulating weather and climate projections data
+
+.pull-left-narrow[.right[
+`r fontawesome::fa("database")`
+]]
+.pull-right-wide[
+Pointing out to useful .White.bg-Gold[data resources and references]
+]
+
+.pull-left-narrow[.right[
+`r fontawesome::fa("r-project", fill = "steelblue")`
+]]
+.pull-right-wide[
+Some .White.bg-Gold[basic climate data manipulation] using **R**
+]
+
+
+
+???
+Convince you (if not already so), that climate change impacts are worrysome, with lots
+of uncertainties, and that it's an interesting topic to conduct research on.
+
+For this, its most important materials is weather and climate projection data. A lot of recent improvements on these data accessibility and tools to manipulate them: the challenge now is more to be able to focus directly on the rights resources, as the task might be daunting if you wrap your head around this for the first time. So we will target some resources and see how we can use them.
+
+---
+class: center, middle, inverse
+background-image: url("img/LA.jpg")
+backgroung-size: cover
+
+## .Red[Methods for Assessing Climate Change Impacts and Adaptation Options]
+
+---
+class: center, middle
+
+.center[<img src="img/av_temperature.png" height="600" />]
+
+???
+2024 as the hottest year on Earth since pre-industrial level. 1.5°C is reached for the first time. If we sustain in the following decade multiple years above the 1.5°C, it means will experience significant warming and above 2°C, IPCC warns against very high risks.
+
+These six data sources are most widespread historical weather datasets, and are the ones used by World Meteorological Organization to track temperature changes with respect to pre-industrial level. We'll see later how to access some of them.
+
+HadCRUT: CRU data from University of East Anglia
+ECMWF ERA5: Data produced by EU Copernicus Climate Change Services and the Eruopean Institute for Weather Forecasts
+NOAA: National Oceanic and Atmospheric Administration, US agency forecasting weather.

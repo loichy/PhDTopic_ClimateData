@@ -1,0 +1,54 @@
+/*-- INCREASE FONT SIZE IN BODY --*/
+/* Adjust the body text font size */
+.remark-slide-content {
+  font-size: 1.2em; /* Adjust the value as needed, e.g., 1.2em, 1.5em, etc. */
+}
+
+/* Optionally, adjust line spacing for better readability */
+.remark-slide-content p {
+  line-height: 1.25; /* Adjust line height as needed */
+}
+
+/*-- PROGRESS BAR IN FOOTER --*/
+  /* https://github.com/yihui/xaringan/wiki/Progressbar */
+  
+.remark-slide-number { position: inherit; }
+
+.remark-slide-number .progress-bar-container {
+  position:           absolute;
+  bottom:             0;
+  height:             5px;
+  display:            block;
+  left:               0;
+  right:              0;
+}
+
+.remark-slide-number .progress-bar {
+  height: 100%;
+  background-color: var(--Gold);
+}
+
+
+/*-- EXPERIMENTAL -----------------------------------------------------------*/
+
+
+/*.columns { display: flex; }*/
+
+.pull-left {
+  padding-top: 0px;
+}
+
+.pull-left-narrow {
+  padding-top: 25px;
+  float: left;
+  width: 20%;
+}
+
+.pull-right-wide {
+  float: right;
+  width: 75%;
+}
+
+/* Clear floats after the columns */
+.pull-right-wide + * { clear: both; }
+
