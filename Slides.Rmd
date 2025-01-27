@@ -186,3 +186,608 @@ These six data sources are most widespread historical weather datasets, and are 
 HadCRUT: CRU data from University of East Anglia
 ECMWF ERA5: Data produced by EU Copernicus Climate Change Services and the Eruopean Institute for Weather Forecasts
 NOAA: National Oceanic and Atmospheric Administration, US agency forecasting weather.
+---
+class: center, middle
+
+.center[<img src="img/ipcc2.png" height="600" />]
+
+???
+There is a direct causal link between climate change and Greenhouse gas emissions caused by economic activities. This graph from last IPCC report shows that current implemented policies would only stabilize emissions, which is bad for climate change (would put us on a 3 to 4°C climate change), and effort to reach the 2°C are substantial: a rapid decrease in GHG emissions is needed.
+
+---
+
+.center[<img src="img/PBs2023.png" height="600" />]
+
+???
+As climate changes, the whole bipsphere (Earth system) is reaching boundaries in multiple dimension. This is the representation of 9 planetary boundaries assessed by the Stockholm Resilience Center. These 9 boundaries show the entirety the ecological crises. Each of these limits are assessed through indicators, some thresholds are chosen, and we see that for 6 of these limits, we are above a high risk zone.
+
+Main reson I wanted to show you this, is to emphasize the face that the climate crisis is also related to other ecological crises, so if you start getting interests in climate change, don't forge that the entire biosphere is under pressure (biodiversity and climate). And that climate change also directly causes these other limits (one of the limit of this vizualisation: it does not show interrelation between limits).
+
+---
+## What do we mean by weather and climate?
+
+**Weather:** .White.bg-Gold[atmospheric conditions in a specific place at a specific time], including temperature, precipitations, wind, humidity, atmospheric pressure
+
+* .White.bg-Gold[Change frequently and vary significantly] from day to day or season to season
+
+--
+
+**Climate:** .White.bg-Gold[long term patterns and averages of weather conditions] on a region over an extended period
+
+* .White.bg-Gold[averaged on long time series], usually 20 or 30 years
+* Can be seen as the underlying distribution from which weather realizations are drawn
+
+???
+Important distinction, which will define the data we used: long time series can be exploited to form historical climate values. If not: we have weather data.
+
+---
+## Assessing impacts of weather/climate on economics outcomes
+
+1. Observations of weather and climate from the .White.bg-Gold[historical record] to .White.bg-Gold[predict] the economic effects of changes in the climate, i.e., changes in
+the distribution of weather outcomes.
+
+  Quasi-experimental tools to **estimate** .White.bg-Gold[plausibly] **causal effects of     climate** on an economic outcome (e.g., health, productivity, income, prices)
+
+  **Identification strategy:** Exploit .White.bg-Gold[randomness in the weather system]
+  * Causal interpretation of weather differs from that of climate due to **adaptation** `r RefManageR::Citep(bib, "merelSufficientStatisticsClimate2024b")`
+
+  * Sensitive to the .White.bg-Gold[specification of weather and climate variable]
+--
+
+2. Simulate a **counterfactual world** where climatic conditions have changed
+using .White.bg-Gold[climate projections]
+
+???
+Use past observed variations in weather from historical records. We obtain plausibly causal effects of climate, from the identification strategy which is that the weather system is random.
+
+Note that there are important debate of what causal effects you are actually observing: causal effects of weather is different fromcausal effects of climate. Example from agriculture:
+* Direct impacts from weather shocks on agricultural production can be larger than the one from climate, as weather shocks have very low predictability and farmers cannot adjust their production plan and are fully hit (i.e. the idea that in the short run many inputs are fixed, which limits the adjustment margin to a shock)
+* Direct impacts from weather shocks on agricultural production can be smaller than the one from climate, if farmers use adaptation strategies that disappear in the long run, for instance pumping water from the ground under a drought, while this groundwater stock might be less accessible in the future.
+
+The plausibly causal effects can occur for various moments of the distribution of weather or climate: can be the mean of the climate variable which plays a role, the variance, or the extreme -> Important to accurately account/represent the biophysical effects of climate on your outcome. Typical example from the agriculture literature: temperature has a differentiated effect from season to season (better to use season-level measure of temperature), and highly unlinear effects of climate on crop yields which make that using average temperature is usually quite bad (as you don't obseve well what happens when you cross some thresholds when using this mean temperature).
+---
+
+## Cross-sectional model
+
+Estimate the effect of .White.bg-Gold[climate] ($C_{i}$) by comparing economic outcomes $y_i$ across different locations, while controlling for observable non-climate confounding variables $X_i$:
+$$y_i = \alpha + C_i \beta + X_i \gamma + \varepsilon_i $$
+* **Identifying assumption:** after conditioning on observable characteristics $X_i$, there is no correlation between the climatic variables and the error term
+* **Theoretical assumption:** $y_i$ is observed under optimal use everywhere, implying that changes in $y_i$ reflect changes in economic conditions net of climate impacts and adaptive responses `r RefManageR::Citep(bib, "mendelsohnImpactGlobalWarming1994a")`
+
+--
+
+**Prone to omitted variable bias** `r RefManageR::Citep(bib, "schlenkerWillUSAgriculture2005")`
+
+
+???
+Very first implementation of econometric quantifications of climate on agriculture. Mendelsohn regressed farmland values on a quadratic functions of temperature and precipitation while controlling for county characteristics (latitude, soil quality...).  Coefficients $\beta$ capture the direct effeccts of climate on crop yields , as well as the indirect substitution of inputs, agricultural pratices, or other adaptations occuring across space. They find benefit of climate change under climate projections from IPCC.
+
+Important criticisms on this very first approach: prone to omitted variable. Revisiting results while accounting for irrigation in Schlenker. Subsidized irrigation is an important input for agriculture in drier areas. Access to subsidized irrigation is highly correlated with climate as hotter climates receive more subsidized water, which also capitalizes into farmland values. Thus, omitting such a variable, $\beta$ capture not only the effect of temperature (negative effect), but also access to a subsidized input (positive effect).
+
+Other examples of omitted variables: expectations of future climate change, nonfarm spillovers on farmland markets.
+
+As a conclusion, cross-sectional analysis are weak due to endogeneity concerns.
+
+---
+
+## Panel regression
+
+Repeated observations of spatial units over time, which allows to .White.bg-Gold[control for time-invariant omitted variables] including **location fixed effects**:
+
+$$
+\begin{align}
+y_{it} = \alpha_i + W_{it} \beta + X_{it} \gamma + \varepsilon_{it}
+\end{align}
+$$
+
+
+* $\alpha_i$ absorb confounding effects caused by unobserved factors constant over time within each unit `r RefManageR::Citep(bib, "deschenesEconomicImpactsClimate2007a")`
+
+* Can include **time fixed effects** $\delta_t$, or **(polynomial) time trends**
+
+* **Statistical advantage** of using weather fluctuations around a mean: .White.bg-Gold[exogenous and random]
+
+--
+
+* But response of agents to unexpected weather shocks may differ significantly from their response to a permanent shift in the climate
+
+* **Susceptible to bias from time-varying factors** correlated with $W_{it}$, e.g., soil moisture, relative humidity
+
+???
+Can include time fixed effects to absorb common shocks in each period. The most common time unit is years, as most panel data track units from year to year. However, the recent growth in high-frequency, remotely sensed variables (discussed further in Section 3) has enabled the measurement of social and economic outcomes at monthly or even daily scales. In such cases, it may be important to include temporal fixed effects to account for seasonality, typically in the form of month or month-of-year fixed effects. Omitting these seasonality controls can bias the weather coefficient by conflating within-year trends with the true effect of weather.
+
+In settings where most of the variation comes from year-to-year fluctuations (e.g., a study of weather shocks in a smaller country that experiences common shocks), it may be preferable to replace time period-specific fixed effects (intercepts) with linear or quadratic time trends. These trends remove broader trends from both the dependent and independent variables while preserving part of the year-to-year fluctuations. Including period fixed effects for small geographic areas is problematic because weather variables, particularly temperature, are often highly correlated within the same area and are measured with error—especially since they tend to be interpolated between weather stations. As a result, period fixed effects for small geographic areas may remove much of the true signal, leaving predominantly noise as weather variation. This noise will bias the coefficients towards zero and lead to standard errors that are too small. The appropriate set of controls should balance potential sources of bias and variance in the weather coefficients, depending on the available data and the underlying data-generating process.
+
+---
+
+## Non-linear Effects of Weather (I)
+
+A .White.bg-DarkRed[one-degree increase in temperature from 35°C to 36°C] is likely .White.bg-Gold[more detrimental] to human health and crops than the same increase .White.bg-MyGreen[from 20°C to 21°C].
+
+.White.bg-DarkBlue[Rising temperatures from extreme cold] can be .White.bg-Gold[beneficial] for some outcomes.
+
+Generalize previous equation to incorporate **non-linear effects**. Flexible functions of weather, $f(W_{it})$ with varying marginal effects across different weather:
+* Polynomials
+* Splines (as in `r RefManageR::Citet(bib, "groom")`)
+* Step function (as in `r RefManageR::Citet(bib, "burke")`)
+
+
+**Requires careful construction of weather variables**
+  * .White.bg-Gold[Time aggregation:] depending on the outcome, non-linearity occurs at a daily or sub-daily scale
+  * .White.bg-Gold[Spatial aggregation:] non-linearity is specific to the local context
+  * But economic outcomes are **often available annually and at a subregional level**: thus **weather data aggregation should align with the data generating process **
+
+???
+* **Polynomials:** These functions offer a parsimonious way to model nonlinearity
+and require fewer observations to estimate. However, they are sensitive
+to extreme values, which can distort the function’s shape. Increasing the
+polynomial’s order can mitigate this, but it may lead to overfitting and require
+more parameters.
+
+* **Splines:** These consist of piecewise linear or non-linear (e.g., cubic) segments
+fitted between control points (knots). Splines provide a smooth, continuous
+function at each knot and are less sensitive to extreme values than
+polynomials. They balance flexibility and stability but might be sensitive to the
+number of chosen knots or knot location.
+
+* **Step Functions:** These non-parametric bins offer high flexibility but require
+assumptions about the number of bins, which can affect interpretation. Too
+many bins can lead to noisy results due to high correlation among bin categories,
+while too few bins may miss important non-linearities. Step functions
+assume that the effect within each bin is constant and changes abruptly at bin
+boundaries, which may not accurately reflect real-world continuous responses.
+---
+class: middle
+## Non-linear Effects of Weather (II)
+
+.center[<img src="img/nonlinear.png" height="450" />]
+
+.center[From `r RefManageR::Citet(bib, "hogan")`]
+
+???
+Figure displays the relationship between annual log corn yields and observed temperatures during the growing season April-September (183 days), accounting for the within-day temperature distribution. The graph shows the effect of a 24-hour (one day) exposure to various temperatures on annual log yields. It uses counties east of the 100 degree meridian (except Florida) for the years 1980–2020 that had at least 20 observations, resulting in 70,471 observations. All models control for a quadratic in season-total precipitation as well as county-specific quadratic time trends. Errors are clustered at the state level.
+
+* Binned categories: artifact of assuming marginal effect of temperature within the same interval to be zeo, while responses are likely to be continuous across temperatures. High multicollinearity as locations with a lot of time in closed bins.
+
+* Cubic splines with 7 knots: at each knots, restriction as the function is continuous and differentiable.
+---
+
+## Spatial Correlation of Error Terms
+
+Omitted variables which vary smoothly across space, thus **errors are highly spatially correlated**
+
+**Adjust standard errors for spatial correlation** to avoid underestimating them, which could lead to artificially high confidence levels
+
+* .White.bg-Gold[Cluster standard errors:] allow for correlation among units within each  cluster but no correlation across clusters. Then results are sensitive to the cluster level and number of clusters  `r RefManageR::Citep(bib, "hogan")`.
+
+* .White.bg-Gold[Group bootstrap:] Impose a correlation between units up to a distance cutoff (or declining with distance), or **Conley standard errors**.
+
+---
+
+## The Long Differences
+
+Recent oberved warming trends can be exploited to study economic responses to climate change `r RefManageR::Citep(bib, "burke")`
+
+**Long differences method:** exploits period-to-period changes over extended time horizons (usually decades).
+
+For each decade $\tau$, $\bar{Z}_{i\tau}= \frac{1}{10} \sum_t Z_{it}$ and the long differences model is:
+
+$$
+\begin{align}
+\bar{y}_{i\tau} = \alpha_i + \bar{W}_{i\tau} \beta + \bar{X}_{i\tau} \gamma + \bar{\delta}_\tau \varepsilon_{i\tau}
+\end{align}
+$$
+
+where now $\beta$ measures the marginal effect of changes in .White.bg-Gold[average] weather conditions to change of the average in the outcome variable.
+
+**Better captures long-run effects of climate change and adaptation**
+
+--
+
+* Requires **a long time series**
+
+* Susceptibly biased with omitted trending variables correlated with the weather trends
+---
+
+## Future Projections of Climate Impacts
+
+Requires the use of **general circulation models (GCMs):** simulate .White.bg-Gold[physical processes in the atmosphere, ocean and land surface to predict changes in climate based on GHG emissions scenarios]
+
+Operate on a 3-D grid covering the globe to project future weather conditions by calibrating conditions representing historical state of climate
+
+**Uncertainty introduced from the parametrization:** different GCMs produce different responses to the same GHG emissions scenario
+
+--
+
+.pull-left[
+Possible to **rely on multiple GCMs** to estimate climate impacts and better capture uncertainty in the projected climate variables, such as the standardized [_CMIP6 initiative_](https://pcmdi.llnl.gov/CMIP6/)
+  * With standardized scenarios: .White.bg-Gold[Shared Socioeconomic Pathways (SSPs)]
+]
+.pull-right[
+.center[<img src="img/ssp.png" height="250" />]
+]
+
+---
+
+## How to calculate future impacts?
+
+Suppose one of the previous approach gives you a *satisfying* marginal effects of a component of climate (temperature,or precipitations), denoted $\beta$
+
+Projected impacts are calculated by **multiplying $\beta$ by projected changes in the climate variables over timed:** $\beta [T_{i,2050} - T_{i,hist}]$, where both $T_{i,2050}$ and $T_{i,hist}$ are both simulated from GCMs
+
+**Outputs from GCMs are spatially coarse (typically 250km grid) compared with historical weather observations (from 1km grid to 10km):** limits the ability to compute future impacts with spatial details
+  * Can use .White.bg-Gold[Regionally downscaled GCMs:] methods which improve the spatial resolution of GCMs
+
+.White.bg-Gold[Monte-Carlo simulations or bootstrapping] on the $\beta$ to capture .White.bg-Gold[statistical uncertainty on the response function]
+
+???
+When calculating future impacts, always compared projected climate variables with historical values both coming from GCMs! Indeed, GCMs outputs are often regionally biased (over or under predicting current temperature), and it is therefore required to compared future projections with the historical projections made by GCMs.
+---
+
+## How does climate and weather affect economic outcomes?
+
+* A brief review of some .White.bg-Gold[recent global evidence] for **agriculture**, **mortality**,  **production**, **energy consumption**
+
+* But bear in mind that these methods can be applied to .White.bg-Gold[different geographies]: individuals, cities, regions, countries
+
+* And to question climate change impacts on .White.bg-Gold[other outcome of interests]: e.g., prices `r RefManageR::Citep(bib, "crofilsDynamicEffectsWeather2025")`, labour force reallocations `r RefManageR::Citep(bib, "liuClimateChangeLabor2023")`, economic cycles `r RefManageR::Citep(bib, "linsenmeierSeasonalTemperatureVariability2024")`
+
+---
+
+## Impacts on agricultural productivity
+
+.center[<img src="img/ortiz.png" height="350" />]
+
+.center[From `r RefManageR::Citet(bib, "ortiz-bobea")` where]
+
+$$
+\begin{align}
+\Delta TFP_{it} = \alpha_i + \delta_t + \beta_1 T_{it} + \beta_2 T_{it}^2 + \beta_3 P_{it} + \beta_4 P_{it}^2 + \varepsilon_{it}
+\end{align}
+$$
+for country $i$ and year $t$
+
+???
+Historically, annual temperatures fluctuated around a constant
+mean, implying they were independently and identically distributed.
+However, in recent decades, clear
+warming trends have emerged. For example, since roughly 1980, the United
+States has experienced a decrease in heating-degree days (cold days when
+heating is required) and an increase in cooling-degree days (hot days when
+cooling is required).
+
+Important to remove the trend to avoid any spurious correlation between trending variables.
+
+---
+
+## Impacts on mortality
+
+.center[<img src="img/mortality.png" height="300" />]
+
+.center[From `r RefManageR::Citet(bib, "carleton")` where]
+
+$$
+\begin{align}
+Mortality_{ait} = \alpha_{ai} + \delta_{act} + g_a(T_{it}) + q_{ca}(P_{it}) + \varepsilon_{ait}
+\end{align}
+$$
+
+for age category $a$, the subnational region $i$, year $t$, and country $c$, and where $g(.)$ and $q(.)$ are quadratic functions of temperature and precipitations respectively.
+
+---
+## Impacts on income
+.pull-left-narrow[.middle[
+From `r RefManageR::Citet(bib, "kotz")` where
+
+$$
+\begin{align}
+\Delta lgrp_{it} = &\alpha_{i} + \delta_{t} + \kappa_i t + \\
+&\sum_l \beta_l \Delta C_{i,t-l} + \varepsilon_{it}
+\end{align}
+$$
+
+where $l$ are lags
+
+]] .pull-right-wide[
+.center[
+<img src="img/wenz.png" height="500" />
+]
+]
+---
+## Impacts on energy consumption
+
+.center[
+<img src="img/energy.png" height="300" />
+]
+
+.center[
+From `r RefManageR::Citet(bib, "rode")`
+]
+
+---
+class: center, middle, inverse
+background-image: url("img/eowyn.png")
+background-size: cover
+
+## Research Frontiers with Weather and Climate Data in Economics
+
+---
+## Future directions
+
+**Manipulating remotely sensed data:** satellite measurements of economic outcomes `r RefManageR::Citep(bib, "linsenmeier")`
+  * .White.bg-Gold[Higher spatial and temporal resolution] with a .White.bg-Gold[global coverage] which can improve the measure of the economic variable
+
+--
+
+Leveraging .White.bg-Gold[high frequency data] to improve the **aggregation technique** to match the data generation process
+
+--
+
+Beyond model and climate **uncertainty**: .White.bg-Gold[econometric model specification], .White.bg-Gold[stability of relationships over time], .White.bg-Gold[endogenous adaptation strategies not modeled] `r RefManageR::Citep(bib, "jensen")`
+
+--
+
+**Structural models to better account for interlinkages across space and time**
+  * Spatial equilibrium models to account how economies and agents adjust to a world with a different climate `r RefManageR::Citep(bib, "cruz")`
+
+
+---
+class: center, middle, inverse
+background-image: url("img/valencia.png")
+background-size: cover
+
+## Manipulating Weather and Climate Projections Data in R
+---
+
+## Workflow for Manipulating Weather and Climate data in R
+
+Process of .White.bg-Gold[choosing], .White.bg-Gold[getting], and .White.bg-Gold[aggregating weather data] to then associate it with economic variables
+
+.White.bg-Gold[Almost everything you need] is on [The Practical Guide to Climate Econometrics](https://climateestimate.net/content/getting-started.html) and adapted for multiple language (Python, R, Matlab)
+
+--
+
+.White.bg-Gold[Infinite amount of resources on the web] which tends to make this lecture useless
+
+Also, ArcGIS and QGIS can do such operations without coding much
+
+--
+
+But let's show a workflow using **R** which works, and which can be easily adapted to your problem
+
+---
+
+## Choosing Weather Data: data type and source
+
+Data from **weather stations**:
+* Provide .White.bg-Gold[accurate] weather data for specific locations
+* .White.bg-Gold[Missing observations] as stations appear and disappear in a non-random and potentially endogeneous way
+* Possible to .White.bg-Gold[interpolate missing data] (e.g., using inverse distance-weighted averages), but this can introduce measurement errors and bias the estimated coefficients
+* Example of freely accessible data: [NOAA dataset](https://www.ncei.noaa.gov/metadata/geoportal/rest/metadata/item/gov.noaa.ncdc:C00861/html), with global daily weather stations data
+
+--
+
+**Gridded weather datasets:**
+* A .White.bg-Gold[uniform] weather record over time and space
+* Based on available weather station data and constructed through .White.bg-Gold[statistical interpolation] and/or .White.bg-Gold[climate system models ("reanalysis")]
+* Multiple **freely available sources** of gridded data:
+  * [PRISM](https://prism.oregonstate.edu/): US gridded weather data, daily, with fine resolution (4km) , from Oregon University
+  * [ERA5](https://cds.climate.copernicus.eu/datasets/reanalysis-era5-single-levels?tab=overview): Global level gridded weather data provided by EU, **hourly** and coarse resolution (25km)
+  * [CRU](https://crudata.uea.ac.uk/cru/data/hrg/): Global level gridded weather data, monthly and coarse resolution (56km), from University of East Anglia
+
+---
+
+## Gridded weather data
+.pull-left[
+* Referred as **raster data**: structured as a .White.bg-Gold[matrix]
+  * Each matrix entry is a cell/patch on the earth surface
+  * **A three-dimensional matrix:** first two dimensions are longitude and latitude of each cells and the third is time
+
+* Thus a .White.bg-Gold[lot of data manipulation can be done with matrix algebra], which is great as economists like matrices
+
+* But we need to be **careful of the extent, spatial resolution, and projection** of these grids when playing with them
+
+]
+.pull-right[
+.center[<img src="img/raster.png" height="350" />]
+]
+
+???
+* R is a rather efficient language to perform matrix algebra, but Python or Matlab performs well too
+
+*The extent defines the “boundaries” of the raster. Because rasters are rectangular, the extent is simply a matrix providing information on the southern, northern, western, and eastern limits of the raster. These limits are typically provided in degrees (but not always). A global dataset can thus range from 180°W to +180° E, for rasters centered in Europe, and from 180°Sto180°N,althoughitisraretosee rasters extend to the poles. The spatial resolution of the raster simply indicates the size of a grid cell in degrees, although sometime also in meters. Finally, the projection is the rule by which the surface of the Earth is flattened for the purpose of visualization.
+
+---
+
+## Downloading Weather Data: ERA5 data I
+
+.pull-left[
+1. **Register to [ECMWF (here)](https://www.ecmwf.int/)** to get an account and be able to request the API
+
+2. Once account validated, **Get your [API keys (here)](https://cds.climate.copernicus.eu/how-to-api)**
+  * Note it somewhere in your computer and save it, but never share it!
+
+3. **Go to [ERA5 daily stat data (here)](https://cds.climate.copernicus.eu/datasets/derived-era5-single-levels-daily-statistics?tab=download) and select data of your choice**
+  * For our example: Total daily precipitations, for September 2024, in France (N:52, W:-5, E:9, S:42)
+
+4. **Accept terms and copy from the "API request" block**
+
+]
+.pull-right[
+.center[<img src="img/era5.png" height="350" />]
+]
+
+
+---
+
+## Downloading Weather Data: ERA5 data II
+
+You can use the script `Rcode.R` in the code folder which replicates the following steps.
+
+.pull-left[
+**Use the [ecmwfr](https://bluegreen-labs.github.io/ecmwfr/index.html) package**
+
+**Insert your API keys**
+]
+
+.pull-right[
+
+```{r tidy=FALSE}
+library("ecmwfr")
+  
+{{wf_set_key(key = "") }}
+```
+]
+
+.pull-left[
+  **Paste the API request in your script **
+  
+  **Transform in R language with ECMWF addins** and add **'.nc'** to the format
+  of the target file
+]
+.pull-right[
+```{r tidy=FALSE}
+request <- list(
+  dataset_short_name = "derived-era5-single-levels-daily-statistics",
+  product_type = "reanalysis",
+  variable = "total_precipitation",
+  year = "2024",
+  
+  area = c(52, -5, 42, 9),
+  {{target = "TMPFILE.nc"}}
+)
+```
+]
+
+---
+
+## Aggregate ERA5 data at the French department level
+
+.pull-left[
+.center[<img src="figures/prec_dept.png" height="400" />]
+]
+.pull-right[
+We know have our .White.bg-Gold[raster data of precipitations] for France and neighboring cells.
+
+Suppose that we want to .White.bg-Gold[aggregate the daily precipitations at the department level] to match hypothetic economics data at the department level.
+
+.White.bg-Pink[How to proceed?]
+
+* Especially if we want to accurately represent rains experienced by the population?
+
+* .White.bg-Gold[Weight cells depending on their population]
+]
+
+
+---
+## ERA5 Data Aggregation
+
+1. **Load administrative units (department) contours**
+
+2. **Load population grid data**,constructed in the script `PreparePopulationRaster.R`
+  * Comes from fine-level population grid and realigned with the ERA5 grid and population is aggregated at these larger cells
+  
+3. **Stack** the precipitation raster and the population raster
+
+4. **Identify the cells and their surface share lying in the boundaries for each departement**
+
+5. For each department, compute **cells'weights:** share of the population department in a cell
+
+6. To aggregate at the department level, consider the weighted mean of the precipitation in the department as a matrix multiplication `r RefManageR::Citep(bib, "ortiz-bobeaa")`: 
+  * Build a projection matrix $P$ so that each column corresponds to a department and its content is the weight (0 if outside of the department or zero population, and weight otherwise). And this matrix will multiply the raster weather data.
+
+---
+class: center, middle
+
+.center[<img src="figures/Fig1.png" height="600" />]
+
+---
+class: center, middle
+
+.center[<img src="figures/Fig2.png" height="600" />]
+
+---
+## What's next?
+
+* **Time aggregation:** we might want monthly precipitations 
+  * Either sum each department-level daily precipitations or sum each raster layers and then aggregate
+  * If performing a .White.bg-Gold[non-linear transformation of weather]: (i) **FIRST** perform the non-linear transformation on the raster data and (ii) **THEN** spatially aggregate.
+  
+* **Repeat the process for a larger time-span**
+  * Requires to .White.bg-Gold[automate the process:] downloading with API and data preparation
+  * Other bottleneck is to read each rraster, especially if they have large dimensions
+  * As it is computing intensive, might consider deploying parralel computing
+  
+* Then, exploit .White.bg-Gold[climate projections] data from GCMs to project future precipitations
+  * [CMIP 6 Data (here)](https://pcmdi.llnl.gov/CMIP6/Guide/dataUsers.html) are freely accessible and can allow you to download projections from multiple GCMs with standardized scenarios 
+  * Very similar process (same data format), but note that **grid cells tend to be coarser**
+
+---
+
+## Some key references to build this lecture and to go further
+
+* For further details on weather data manipulations in R (gridded **and** point data): `r RefManageR::Citet(bib, "ortiz-bobeaa")`
+
+* A recent Handbook of Climate Change Economics with two great chapters on the econometrics of climate change:
+  * `r RefManageR::Citet(bib, "hogan")`
+  * `r RefManageR::Citet(bib, "carletona")`
+
+
+* For a nice review paper on the different type of weather ad climate data and important aspects to bear in mind:  `r RefManageR::Citet(bib, "auffhammer")`
+
+* For a large review on climate change econometrics: `r RefManageR::Citet(bib, "hsiang")`
+
+---
+# References I
+
+```{r, results='asis', echo=FALSE, warning=FALSE}
+RefManageR::PrintBibliography(bib,
+                              .opts = list(bib.style = "authoryear"),
+                              start = 1,
+                              end = 5
+                              )
+```
+
+---
+# References II
+
+```{r, results='asis', echo=FALSE, warning=FALSE}
+RefManageR::PrintBibliography(bib,
+                              .opts = list(bib.style = "authoryear"),
+                              start = 6,
+                              end = 10
+                              )
+```
+
+---
+# References III
+
+```{r, results='asis', echo=FALSE, warning=FALSE}
+RefManageR::PrintBibliography(bib,
+                              .opts = list(bib.style = "authoryear"),
+                              start =11,
+                              end = 15
+                              )
+```
+
+---
+# References IV
+
+```{r, results='asis', echo=FALSE, warning=FALSE}
+RefManageR::PrintBibliography(bib,
+                              .opts = list(bib.style = "authoryear"),
+                              start =16,
+                              end = 19
+                              )
+```
+
+---
+# References V
+
+```{r, results='asis', echo=FALSE, warning=FALSE}
+RefManageR::PrintBibliography(bib,
+                              .opts = list(bib.style = "authoryear"),
+                              start =20,
+                              end = 25
+                              )
+```

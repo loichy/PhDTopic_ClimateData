@@ -50,3 +50,7 @@ rsconnect/
 
 # Images
 img/
+figures/
+
+# Source data
+source/cds_api_keys.txt
