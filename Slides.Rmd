@@ -34,7 +34,7 @@ meta() %>%
   meta_name("github-repo" = "loichy/WeatherData_Economics") %>% 
   meta_social(
     title = "Weather and Climate Projections Data for Economics &#8212; An Introduction",
-    url = "https://loichy.github.io/phdtopic-slides/PresentationSlides.html#1",
+    url = "https://loichy.github.io/phdtopic/Slides.html#1",
     image_alt = "Title slide for the PhD Topic on Weather and Climate Projections Data for Economics ",
     og_type = "website",
     og_author = "Loic Henry"
